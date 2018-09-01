@@ -1,0 +1,8 @@
+﻿ @media print
+        {
+            .hidewhileprinting
+            {
+            display:none;            	
+            }
+            
+        }

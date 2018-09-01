@@ -1,0 +1,216 @@
+(1) When upload Excel file Question for History subject  ******* change file name History1 as subject name from sheet1
+
+(2) Defulat test add in company id 16 Abhinav it soft 
+
+
+
+
+USE [onlineexamLocal]
+GO
+
+/****** Object:  StoredProcedure [dbo].[getQuestionNewpractice]    Script Date: 07/03/2014 14:51:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[getQuestionNewpractice]
+	(
+
+	@subjectid nvarchar(5),
+	@Queslevel nvarchar(5),
+	@typeofexam nvarchar(5),
+	@Class_id nvarchar(5),
+	@material nvarchar(25),
+	@RoleID nvarchar(5),
+	@chapter nvarchar(70),
+	@UserType nvarchar(5),
+	@status int output
+	)
+
+
+AS
+BEGIN 
+ declare @result as int  
+  set @result = 0
+
+  
+  
+-- declare @subjectid as nvarchar(5)
+--declare	@Queslevel as nvarchar(5)
+--declare	@typeofexam as nvarchar(5)
+--declare	@Class_id as nvarchar(5)
+--	declare @material as nvarchar(25)
+--	declare @RoleID as nvarchar(5)
+--	declare @chapter as nvarchar(70)
+--  --Competitive Exam
+
+--  set @subjectid='26'
+--  set @Queslevel='1'
+--  set @typeofexam='98'
+--  set @Class_id='16'
+--  set @material='''Competitive Exam'''
+--  set @UserType=''
+--  set @chapter=''
+------TypeOFExam='98' and Subject_id='26' and Class_id='16' and QuestionLevel='1' 
+
+
+declare @sql nvarchar(2000)
+
+   if @UserType = '4' and  @RoleID!='7' 
+    
+   begin      
+                if (@chapter is null or @chapter='')
+               begin
+                     set @sql='   select    [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where   '
+			
+			  set @sql=@sql +  ' Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+				  
+				 exec sp_executesql  @sql
+				print @sql
+               end
+                else
+               begin
+                     set @sql='   select    [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where  Chapter_id in('+@chapter+')  '
+			
+			  set @sql=@sql +  ' and Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+				  
+				 exec sp_executesql  @sql
+				 -- print @sql
+				
+				   end
+           end   
+           
+           
+             
+          
+        if @UserType = '3' and @RoleID!='7'
+           begin
+                if (@chapter is null or @chapter='')
+               begin
+                   set @sql='   select  top 300  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where   '
+			
+			  set @sql=@sql +  ' Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id               end
+
+                else
+               begin
+                   set @sql='   select top 300  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where  Chapter_id in('+@chapter+')  '
+			
+			 set @sql=@sql +  ' and Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+					  
+				 exec sp_executesql  @sql
+				 -- print @sql
+              end
+	     end
+
+  if @UserType = '2' and  @RoleID!='7'
+           begin
+                if (@chapter is null or @chapter='')
+               begin
+                   set @sql='   select  top 200  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where   '
+			
+			  set @sql=@sql +  ' Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id               end
+
+                else
+               begin
+                 set @sql=' select top 200  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where  Chapter_id in('+@chapter+')  '
+			
+			  set @sql=@sql +  ' and Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+				  
+				 exec sp_executesql  @sql
+				 -- print @sql
+              end
+	     end
+
+
+  if @RoleID = '7'
+           begin
+                if (@chapter is null or @chapter='')
+               begin
+                  set @sql='   select top 20   [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where   '
+			
+			  set @sql=@sql +  ' Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id            
+			   end
+
+                else
+               begin
+                  set @sql='   select  top 20  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where  Chapter_id in('+@chapter+')  '
+			
+			  set @sql=@sql +  ' and Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+				  
+				 exec sp_executesql  @sql
+				 -- print @sql
+              end
+	     end
+
+
+          if @UserType!='2' and  @UserType !='3' and @UserType!='4' and @RoleID!='7'
+           
+               begin
+                if (@chapter is null or @chapter='')
+               begin
+                    set @sql='   select  top 100  [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where   '
+			
+			  set @sql=@sql +  ' Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id    
+			             end
+
+                else
+               begin
+                 set @sql='   select top 100   [SNO],[Question],[QType],[Answer1] ,[AType],[Answer2] ,[BType] ,[Answer3],[CType] ,[Answer4],[DType] 
+                 ,[OptionE],[EType] ,[OptionP],[PType],[OptionQ],[QType1] ,[OptionR],[RType] ,[OptionS],[SType] ,[OptionT],[TType] ,[Passage],[passageType],[QuesWithImage],[Q1Type] 
+                   ,[Qhint] ,[hType] ,[Correct_answer] ,[QuestionLevel]  ,[TypeofQues]  ,[TypeofDB],[Sellanguage]  from dbo.tblQuestionAccess where  Chapter_id in('+@chapter+')  '
+			
+			 set @sql=@sql +  ' and Subject_id='+@subjectid+'  and TypeOFExam='+@typeofexam+'  and  QuestionLevel='+@Queslevel+ '  and TypeofMaterial='+@material+' and Class_id='+@Class_id
+				  
+				 exec sp_executesql  @sql
+				 -- print @sql
+              end
+            end
+
+
+
+
+
+	
+    
+END
+
+
+
+
+
+
+
+GO
+
+

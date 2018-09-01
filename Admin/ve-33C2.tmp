@@ -1,0 +1,1133 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
+
+public partial class TestDefinition : System.Web.UI.Page
+{
+    int status;
+    string Id, abc, Sql;
+    DataSet ds = new DataSet();
+    CommonCode cc = new CommonCode();
+    ExamnameBLL ebal = new ExamnameBLL();
+    
+    TestDefinationBLL BllTestd = new TestDefinationBLL();
+  
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            
+          
+            bindgridbyClassIDTypeExam();
+            
+         //   loadTypeofExam();
+           
+           // loadSubjectList(); //Loadsubject to checkboxlist
+          
+            Sql = "select Name,ItemValueId from tblItemValue where  ItemId=0 or ItemId=8 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlGroupofExam.DataSource = ds.Tables[0];
+            ddlGroupofExam.DataTextField = "Name";
+            ddlGroupofExam.DataValueField = "ItemValueId";
+            ddlGroupofExam.DataBind();
+
+        }
+
+    }
+
+
+    public string TestExpire(string Id)
+    {
+        try
+        {
+
+            string tblName = Convert.ToString(Session["CompanyId"]) + "" + Convert.ToString(Id);  //// for table create
+
+            Sql = "SELECT create_date FROM sys.Tables where name='tbl" + tblName + "' ";
+            ds = cc.ExecuteDataset(Sql);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                DateTime dt2 = new DateTime();
+                dt2 = Convert.ToDateTime(ds.Tables[0].Rows[0]["create_date"]);
+                DateTime dt1 = new DateTime();
+
+                dt1 = Convert.ToDateTime(System.DateTime.Now);
+
+                TimeSpan ts3 = dt1 - dt2;
+                int d = ts3.Days;
+               
+
+                d = 60 - d;
+
+                day = Convert.ToString(d);
+            }
+        }
+        catch
+        {
+        }
+        return day;
+    }
+
+
+    #region commented lines loaddropdown
+    //public void loadTypeofExam()
+    //{
+    //    Sql = "select Name,ItemValueId from tblItemValue where  ItemId=0 or ItemId=6  ";
+    //    Sql = Sql + "select Name,ItemValueId from tblItemValue where ItemId=0 or ItemId=1";
+
+    //    DataSet ds = cc.ExecuteDataset(Sql);
+    //    if (ds.Tables[0].Rows.Count > 0)
+    //    {
+    //        ddlTypeofExam.DataSource = ds.Tables[0];
+    //        ddlTypeofExam.DataTextField = "Name";
+    //        ddlTypeofExam.DataValueField = "ItemValueId";
+    //        ddlTypeofExam.DataBind();
+    //    }
+
+    //    if (ds.Tables[1].Rows.Count > 0)
+    //    {
+    //        ddlAddClass.DataSource = ds.Tables[1];
+    //        ddlAddClass.DataTextField = "Name";
+    //        ddlAddClass.DataValueField = "ItemValueId";
+    //        ddlAddClass.DataBind();
+    //    }
+    //}
+   
+    //public void loadSubjectList()
+    //{
+    //    Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+    //    ds = cc.ExecuteDataset(Sql);
+    //    chkSubject.DataSource = ds.Tables[0];
+    //    chkSubject.DataTextField = "Name";
+    //    chkSubject.DataValueField = "ItemValueId";
+    //    chkSubject.DataBind();
+    //}
+    #endregion
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        string Id = Convert.ToString(lblId.Text.ToString());
+
+        if (Id == "" || Id == null)
+        {
+            AddNewInsert();
+        }
+        else
+        {
+            Updatedefination(Id);
+            btnSave.Text = "Save";
+        }
+    }
+
+
+    private void AddNewInsert()
+    {
+        try
+        {
+            if (txtExamDate.Text == "" || txtExamduration.Text == "" || txtLevel1.Text == "" || txtLevel2.Text == "" || txtLevel3.Text == "")
+            {
+                lblError.Visible = true;
+                lblError.Text = "Enter All Record";
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Enter All Record')", true);
+            }
+            else
+            {
+                if (txtmarkPassing.Text == "")
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "please Enter Mark for Passing";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Select Mark for Passing')", true);
+                }
+                else if (rdoRetake.SelectedIndex != 1 && rdoRetake.SelectedIndex != 0)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "select Option of Retake";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('select Option of Retake')", true);
+                }
+                else if (rdoBreakAllow.SelectedIndex != 1 && rdoBreakAllow.SelectedIndex != 0)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "select Option of Break";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('select Option of Break')", true);
+
+                }
+                else
+                {
+                    string SubjectID = "", SubjectName = ""; ;
+                    for (int c = 0; c < chkSubject.Items.Count; c++)
+                    {
+                        if (chkSubject.Items[c].Selected == true)
+                        {
+                            SubjectID = SubjectID + "," + chkSubject.Items[c].Value;
+                            SubjectName = SubjectName + "," + chkSubject.Items[c].Text;
+
+                        }
+                    }
+                    if (SubjectID.Length > 1)
+                    {
+                        SubjectID = SubjectID.Substring(1);
+                        lblSubjectID.Text = SubjectID;
+                    }
+                    if (SubjectName.Length > 1)
+                    {
+                        SubjectName = SubjectName.Substring(1);
+                    }
+                    string Sql = "Select Test_ID from tblTestDefinition where   Subject_id='" + lblSubjectID.Text + "' and Exam_name='" + txtTestName.Text + "' ";
+                    string Id1 = Convert.ToString(cc.ExecuteScalar(Sql));
+                    if (!(Id1 == null || Id1 == ""))
+                    {
+                        lblError.Visible = true;
+                        lblError.Text = "This Exam Name is already exist";
+                        ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('This Exam Name is already exist')", true);
+                    }
+                    else
+                    {
+                        BllTestd.TestName = txtTestName.Text;
+                        BllTestd.Exandate1 = Convert.ToString(cc.DTInsert_Local(txtExamDate.Text));
+                        BllTestd.Duration = txtExamduration.Text;
+
+                        BllTestd.D1 = Convert.ToInt32(txtLevel1.Text);
+                        BllTestd.D2 = Convert.ToInt32(txtLevel2.Text);
+                        BllTestd.D3 = Convert.ToInt32(txtLevel3.Text);
+                        BllTestd.LoginId1 = Convert.ToString(Session["LoginId"]);
+
+                        BllTestd.MarkCorrA = Convert.ToString(txtmarkCorrect.Text);
+                        BllTestd.MarkPass = Convert.ToString(txtmarkPassing.Text);
+                        BllTestd.ReverseNavig = Convert.ToString(rdoReverseNavigation.SelectedItem.Text);
+                        BllTestd.NegativeMark = Convert.ToString(rdoNegativeMark.SelectedItem.Text);
+                        if (rdoNegativeMark.SelectedItem.Text == "Yes")
+                        {
+                            BllTestd.MarkforNegative = Convert.ToString(txtSelectMarkforNege.Text);
+                        }
+                        BllTestd.MediumID = Convert.ToString(ddlMedium.SelectedItem.Text);
+
+                        BllTestd.TypeOfExam = Convert.ToInt32(ddlTypeofExam.SelectedValue);
+
+                        BllTestd.Class_id1 = Convert.ToInt32(ddlAddClass.SelectedValue);
+
+
+                        BllTestd.Subject_id1 = Convert.ToString(lblSubjectID.Text);
+                        BllTestd.SubjectName1 = Convert.ToString(SubjectName);
+
+                        BllTestd.Retake = Convert.ToString(rdoRetake.SelectedItem.Text);
+                        BllTestd.BreakAllow = Convert.ToString(rdoBreakAllow.SelectedItem.Text);
+                        BllTestd.TypeofMaterial1 = Convert.ToString(rdoTypeofMaterial.SelectedItem.Text);
+                        BllTestd.GroupOfQuestion1 = Convert.ToString(rdoGroupOFQues.SelectedValue);
+
+                        status = BllTestd._insertTestDefi(BllTestd);
+                        if (status == 1)
+                        {
+                          
+                            bindgridbyClassIDTypeExam();
+                            clear();
+                           // loadSubjectList();
+                            lblError.Text = "TestDefination Insert Successfully";
+                            lblError.Visible = true;
+                            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('TestDefination Insert successfully')", true);
+                        }
+                        else
+                        {
+                          
+                            bindgridbyClassIDTypeExam();
+                            lblError.Text = "TestDefination not Insert Successfully";
+                            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('TestDefination not Insert successfully')", true);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('ex.Exam Name not added')", true);
+        }
+    }
+    private void Updatedefination(string Id)
+    {
+        try
+        {
+            if (txtExamDate.Text == "" || txtExamduration.Text == "" || txtLevel1.Text == "" || txtLevel2.Text == "" || txtLevel3.Text == "")
+            {
+                lblError.Visible = true;
+                lblError.Text = "Enter All Record";
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Enter All Record')", true);
+            }
+            else
+            {
+
+                if (txtmarkPassing.Text == "")
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "Select Mark for Passing";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Select Mark for Passing')", true);
+
+                }
+                else if (rdoRetake.SelectedIndex != 1 && rdoRetake.SelectedIndex != 0)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "select Option of Retake";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('select Option of Retake')", true);
+
+                }
+                else if (rdoBreakAllow.SelectedIndex != 1 && rdoBreakAllow.SelectedIndex != 0)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "select Option of Break";
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('select Option of Break')", true);
+
+                }
+                else
+                {
+                    string SubjectID = "", SubjectName = ""; ;
+                    for (int c = 0; c < chkSubject.Items.Count; c++)
+                    {
+                        if (chkSubject.Items[c].Selected == true)
+                        {
+                            SubjectID = SubjectID + "," + chkSubject.Items[c].Value;
+                            SubjectName = SubjectName + "," + chkSubject.Items[c].Text;
+                        }
+                    }
+                    if (SubjectID.Length > 1)
+                    {
+                        SubjectID = SubjectID.Substring(1);
+                        lblSubjectID.Text = SubjectID;
+                    }
+                    if (SubjectName.Length > 1)
+                    {
+                        SubjectName = SubjectName.Substring(1);
+                    }
+                    string Sql = "Select Test_ID from tblTestDefinition where   Subject_id='" + chkSubject.SelectedValue + "' and Exam_name='" + txtTestName + "' ";
+                    string Id1 = Convert.ToString(cc.ExecuteScalar(Sql));
+                    if (!(Id1 == null || Id1 == ""))
+                    {
+                        lblError.Visible = true;
+                        lblError.Text = "This Exam Name is already exist";
+                        ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('This Exam Name is already exist')", true);
+                    }
+                    else
+                    {
+                        BllTestd.Test_ID1 = Convert.ToInt32(Id);
+                        BllTestd.TestName = txtTestName.Text;
+                        BllTestd.Exandate1 = Convert.ToString(cc.DTInsert_Local(txtExamDate.Text));
+                        BllTestd.Duration = txtExamduration.Text;
+                        BllTestd.D1 = Convert.ToInt32(txtLevel1.Text);
+                        BllTestd.D2 = Convert.ToInt32(txtLevel2.Text);
+                        BllTestd.D3 = Convert.ToInt32(txtLevel3.Text);
+                        BllTestd.LoginId1 = Convert.ToString(Session["LoginId"]);
+                        BllTestd.MarkCorrA = Convert.ToString(txtmarkCorrect.Text);
+                        BllTestd.MarkPass = Convert.ToString(txtmarkPassing.Text);
+                        BllTestd.ReverseNavig = Convert.ToString(rdoReverseNavigation.SelectedItem.Text);
+                        BllTestd.NegativeMark = Convert.ToString(rdoNegativeMark.SelectedItem.Text);
+                        if (rdoNegativeMark.SelectedItem.Text == "Yes")
+                        {
+                            BllTestd.MarkforNegative = Convert.ToString(txtSelectMarkforNege.Text);
+                        }
+                        BllTestd.MediumID = Convert.ToString(ddlMedium.SelectedItem.Text);
+                        BllTestd.TypeOfExam = Convert.ToInt32(ddlTypeofExam.SelectedValue);
+
+                        BllTestd.Class_id1 = Convert.ToInt32(ddlAddClass.SelectedValue);
+
+                        BllTestd.Subject_id1 = Convert.ToString(lblSubjectID.Text);
+                        BllTestd.SubjectName1 = Convert.ToString(SubjectName);
+
+                        BllTestd.Retake = Convert.ToString(rdoRetake.SelectedItem.Text);
+                        BllTestd.BreakAllow = Convert.ToString(rdoBreakAllow.SelectedItem.Text);
+                        BllTestd.TypeofMaterial1 = Convert.ToString(rdoTypeofMaterial.SelectedItem.Text);
+                        BllTestd.GroupOfQuestion1 = Convert.ToString(rdoGroupOFQues.SelectedValue);
+
+                        status = BllTestd._updatetestdef(BllTestd);
+                        if (status == 1)
+                        {
+                          
+                            bindgridbyClassIDTypeExam();
+                            clear();
+                          //  loadSubjectList();
+                            lblError.Text = "TestDefination updated Successfully";
+                            lblError.Visible = true;
+                            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('TestDefination updated successfully')", true);
+                        }
+                        else
+                        {
+                            
+                            bindgridbyClassIDTypeExam();
+                            lblError.Text = "TestDefination not  updated Successfully";
+                            lblError.Visible = true;
+                            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('TestDefination not  updated successfully')", true);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('ex. TestDefination not Updated')", true);
+        }
+    }
+    public void clear()
+    {
+        lblId.Text = "";
+        btnSave.Text = "Save";
+        txtExamduration.Text = "";
+        txtExamDate.Text = "";
+        txtLevel1.Text = "";
+        txtLevel2.Text = "";
+        txtLevel3.Text = "";
+        txtTestName.Text = "";
+
+        lblError.Visible = true;
+        rdoRetake.ClearSelection();
+        rdoBreakAllow.ClearSelection();
+        rdoReverseNavigation.ClearSelection();
+        rdoNegativeMark.ClearSelection();
+        txtmarkCorrect.Text = "";
+        txtmarkPassing.Text = "";
+        txtSelectMarkforNege.Text = "";
+        rdoTypeofMaterial.ClearSelection();
+        rdoGroupOFQues.ClearSelection();
+        chkSubject.ClearSelection();
+        ddlAddClass.SelectedValue = "1";
+        ddlTypeofExam.SelectedValue = "1";
+    }
+    
+
+    protected void gvState_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        string Id = Convert.ToString(e.CommandArgument);
+        lblId.Text = Id;
+
+        if (Convert.ToString(e.CommandName) == "Assign")
+        {
+            Sql = "select SNO from tblDefaultTest where TestID='" + Id + "' ";
+            string defId = cc.ExecuteScalar(Sql);
+
+           // if (Id != "35" && Id != "39" && Id != "52" && Id != "73" && Id != "74" && Id != "167" && Id != "168") //by default test not to assign to any one 
+           if(defId=="")
+            {
+                Response.Redirect("ClassStudentAssign.aspx?Id=" + Id);
+            }
+            else
+            {
+
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('You cann't Assign Test,Its already Assign to all Students')", true);
+            }
+        }
+
+        if (Convert.ToString(e.CommandName) == "Modify")
+        {
+            chkSubject.ClearSelection();
+            btnSave.Text = "Update";
+            BllTestd.Test_ID1 = Convert.ToInt32(Id);
+            DataSet ds = BllTestd._selecttestdef(BllTestd);
+
+            try
+            {
+                string testLoginID = Convert.ToString(ds.Tables[0].Rows[0]["LoginId"]);
+                string LoginId = Convert.ToString(Session["LoginId"]);
+                if (testLoginID == "" && LoginId != "7588419504") //7588419504 this no is gayatri Mam Class Admin role. she can change modify test only
+             
+               {
+                    clear();
+                    lblError.Text = "You can not Modify this Test !";
+                    lblError.Visible = true;
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('You can not Modify this default Test !')", true);
+
+                }
+                else
+                {
+
+                    txtExamDate.Text = cc.DTGet_Local(Convert.ToString(ds.Tables[0].Rows[0]["Exam_date"]));
+                    txtTestName.Text = Convert.ToString(ds.Tables[0].Rows[0]["Exam_name"]);
+                    txtExamduration.Text = Convert.ToString(ds.Tables[0].Rows[0]["Exam_Duration"]);
+                    txtLevel1.Text = Convert.ToString(ds.Tables[0].Rows[0]["DLevel1"]);
+                    txtLevel2.Text = Convert.ToString(ds.Tables[0].Rows[0]["DLevel2"]);
+                    txtLevel3.Text = Convert.ToString(ds.Tables[0].Rows[0]["DLevel3"]);
+                    string Subject_id = Convert.ToString(ds.Tables[0].Rows[0]["Subject_id"]);
+                    string[] subjlist2 = Subject_id.Split(',');
+                    for (int c = 0; c < chkSubject.Items.Count; c++)
+                    {
+                        if (Subject_id.Contains(chkSubject.Items[c].Value.ToString()))
+                        {
+                            chkSubject.Items[c].Selected = true;
+                        }
+                    }
+
+                    ddlAddClass.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["CLass_id"]);
+                    txtmarkCorrect.Text = Convert.ToString(ds.Tables[0].Rows[0]["MarkCorrA"]);
+                    string a = Convert.ToString(ds.Tables[0].Rows[0]["ReverseNavig"]);
+                    if (a == "Yes")
+                    {
+                        rdoReverseNavigation.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        rdoReverseNavigation.SelectedIndex = 1;
+                    }
+                    string b = Convert.ToString(ds.Tables[0].Rows[0]["NegativeMark"]);
+                    if (b == "Yes")
+                    {
+                        rdoNegativeMark.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        rdoNegativeMark.SelectedIndex = 1;
+                        txtSelectMarkforNege.Enabled = false;
+                    }
+                    if (b == "Yes")
+                    {
+                        txtSelectMarkforNege.Enabled = true;
+                        txtSelectMarkforNege.Text = Convert.ToString(ds.Tables[0].Rows[0]["MarkforNegative"]);
+                    }
+                    ddlMedium.SelectedItem.Text = Convert.ToString(ds.Tables[0].Rows[0]["MediumID"]);
+                    ddlTypeofExam.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["TypeOfExam"]);
+                    string r = Convert.ToString(ds.Tables[0].Rows[0]["TypeofMaterial"]);
+                    if (r == "Class")
+                    {
+                        rdoTypeofMaterial.SelectedIndex = 0;
+                        Label11.Visible = true;
+                        Label10.Visible = false;
+                        RequiredFieldValidator4.Enabled = true;
+                        RequiredFieldValidator1.Enabled = false;
+                    }
+                    else
+                    {
+                        rdoTypeofMaterial.SelectedIndex = 1;
+                        Label10.Visible = true;
+                        Label11.Visible = false;
+                        RequiredFieldValidator4.Enabled = false;
+                        RequiredFieldValidator1.Enabled = true;
+
+                    }
+
+                    rdoGroupOFQues.SelectedValue = Convert.ToString(ds.Tables[0].Rows[0]["GroupOfQuestion"]);
+
+                    if (rdoGroupOFQues.SelectedValue == "1")
+                    {
+                        lblMarkcorrAns.Text = "Total Max Marks : ";
+                    }
+                    else
+                    {
+                        lblMarkcorrAns.Text = "Marks For Correct Ans :";
+                    }
+
+                    string Retake = Convert.ToString(ds.Tables[0].Rows[0]["Retake"]);
+                    if (Retake == "Yes")
+                    {
+                        rdoRetake.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        rdoRetake.SelectedIndex = 1;
+                    }
+                    string BreakAllow = Convert.ToString(ds.Tables[0].Rows[0]["BreakAllow"]);
+                    if (BreakAllow == "Yes")
+                    {
+                        rdoBreakAllow.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        rdoBreakAllow.SelectedIndex = 1;
+                    }
+
+                    txtmarkPassing.Text = Convert.ToString(ds.Tables[0].Rows[0]["MarkPass"]);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<h5>" + ex.Message);
+            }
+        }
+
+        if (Convert.ToString(e.CommandName) == "Delete")
+        {
+
+            try
+            {
+                BllTestd.Test_ID1 = Convert.ToInt32(Id);
+                Sql = "select LoginId from tblTestDefinition where Test_ID =" + BllTestd.Test_ID1 + "";
+                string testLoginID = cc.ExecuteScalar(Sql);
+                string LoginId = Convert.ToString(Session["LoginId"]);
+
+                if (testLoginID == "" && LoginId != "7588419504") //7588419504 this no is gayatri Mam Class Admin role. she can change modify test only
+                {
+                    clear();
+                    lblError.Text = "You can not Delete this Test !";
+                    lblError.Visible = true;
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('You can not Delete this Test !')", true);
+
+                }
+                else
+                {
+                    string s11 = Convert.ToString(Session["CompanyId"]) + "" + Convert.ToString(Id);  //// for table create
+                    try
+                    {
+                        Sql = "drop table tbl" + s11 + "";
+                        int Status2 = cc.ExecuteNonQuery(Sql);
+                        Sql = "drop view tbll" + s11 + "";
+                        Status2 = cc.ExecuteNonQuery(Sql);
+                    }
+                    catch(Exception ex)
+                    {
+                        Response.Write("<h5>" + ex.Message);
+                    }
+
+                    BllTestd.Test_ID1 = Convert.ToInt32(Id);
+                    status = BllTestd._deletetestdef(BllTestd);
+                    if (status == 1)
+                    {
+                        clear();
+                        bindgridbyClassIDTypeExam();
+
+                        lblError.Text = "Test Deleted Successfully";
+                        lblError.Visible = true;
+                        ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Defination Record Deleted successfully')", true);
+
+                    }
+                    else
+                    {
+
+                        lblError.Text = "Test not  Deleted Successfully";
+                        lblError.Visible = true;
+                        ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('Defination not Record Deleted')", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "msg", "alert('This record reference use Other Location')", true);
+                lblError.Text = "TestDefination not Deleted Successfully";
+
+            }
+
+        }
+
+    }
+    protected void gvState_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvState.PageIndex = e.NewPageIndex;
+        bindgridbyClassIDTypeExam();
+    }
+
+
+    protected void btncancel_Click(object sender, EventArgs e)
+    {
+        clear();
+    }
+
+
+
+
+    protected void ddlMedium_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    public void bindgridbyClassIDTypeExam()
+    {
+       // string LoginId = Convert.ToString(Session["LoginId"]);
+
+        BllTestd.LoginId1 = Convert.ToString(Session["LoginId"]);
+        DataSet ds = BllTestd.GetTestByGroupofQues(BllTestd);
+        
+        DataColumn column = new DataColumn();
+        column.ColumnName = "ExpireDate";
+        column.DataType = System.Type.GetType("System.String");
+        column.AutoIncrement = false;
+        column.ReadOnly = false;
+        ds.Tables[0].Columns.Add(new DataColumn("column"));
+      
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+
+            gvState.DataSource = ds.Tables[0];
+            gvState.DataBind();
+            gvState.Visible = true;
+
+        }
+
+    }
+
+    #region Commented Lines of SortGridview Function
+
+    //public void SortDataGridView()
+    //{
+    //    try
+    //    {
+    //        //BllTestd.LoginId1 = Convert.ToString(Session["LoginId1"]);
+    //        DataSet ds = BllTestd.GridviewSortData1(BllTestd);
+
+    //        if (ds.Tables[0].Rows.Count > 0)
+    //        {
+    //            DataView dv = ds.Tables[0].DefaultView;
+    //            if (Session["sortBy"] != null)
+    //            {
+    //                dv.Sort = Session["sortBy"].ToString();
+    //            }
+
+    //            gvState.DataSource = dv;
+    //            gvState.DataBind();
+    //            gvState.Visible = true;
+
+    //        }
+    //        else
+    //        {
+    //            gvState.DataSource = null;
+    //            gvState.DataBind();
+    //        }
+        //}
+    //    catch (Exception ex)
+    //    {
+    //        Response.Write("<h5>" + ex.Message);
+    //    }
+    //}
+
+    #endregion
+
+    protected void rdoNegativeMark_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (rdoNegativeMark.SelectedItem.Text == "No")
+        {
+            txtSelectMarkforNege.Text = "";
+            txtSelectMarkforNege.Enabled = false;
+        }
+        else
+        {
+            txtSelectMarkforNege.Enabled = true;
+        }
+    }
+
+
+    protected void ddlMedium_SelectedIndexChanged1(object sender, EventArgs e)
+    {
+
+    }
+    protected void rdoTypeofMaterial_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (rdoTypeofMaterial.SelectedIndex == 0)
+        {
+            Label11.Visible = true;
+            Label10.Visible = false;
+            RequiredFieldValidator4.Enabled = true;
+            RequiredFieldValidator1.Enabled = false;
+        }
+        else
+        {
+            Label11.Visible = false;
+            Label10.Visible = true;
+            RequiredFieldValidator4.Enabled = false;
+            RequiredFieldValidator1.Enabled = true;
+        }
+    }
+    
+    
+    string day;
+    protected void rdoGroupOFQues_SelectedIndexChanged(object sender, EventArgs e)
+    {       
+        BllTestd.LoginId1 = Convert.ToString(Session["LoginId"]);
+        BllTestd.GroupOfQuestion1 = Convert.ToString(rdoGroupOFQues.SelectedValue);
+        DataSet ds = BllTestd.GetTestByGroupofQues(BllTestd);
+
+        DataColumn column = new DataColumn();
+        column.ColumnName = "ExpireDate";
+        column.DataType = System.Type.GetType("System.String");
+        column.AutoIncrement = false;
+        column.ReadOnly = false;
+        ds.Tables[0].Columns.Add(new DataColumn("column"));
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                string testid = Convert.ToString(ds.Tables[0].Rows[i]["Id"]);
+                string LoginIddal = Convert.ToString(ds.Tables[0].Rows[i]["LoginId"]); //LoginId
+
+                //if (testid != "35" && testid != "73" && testid != "74" && testid != "167" && testid != "39" && testid != "52")//default test 
+                //{
+
+                if (LoginIddal != "")//default test 
+                {
+                    string tblName = Convert.ToString(Session["CompanyId"]) + "" + Convert.ToString(testid);  //// for table create
+                    string day = TestExpire(testid); // get day from test eepire on testid
+                    int dayint = Convert.ToInt32(day);
+                    if (day != null)
+                    {
+                        day = day + " Days left";
+                        ds.Tables[0].Rows[i]["column"] = Convert.ToString(day);
+                        if (dayint <= 0)
+                        {
+                            try
+                            {
+                                Sql = "drop table tbl" + tblName + "";
+                                int Status2 = cc.ExecuteNonQuery(Sql);
+                                Sql = "drop view tbll" + tblName + "";
+                                Status2 = cc.ExecuteNonQuery(Sql);
+                                Sql = "Delete from tblTestDefinition where Test_ID=" + testid + "";
+                                Status2 = cc.ExecuteNonQuery(Sql);
+                            }
+                            catch(Exception ex)
+                            {
+                                Response.Write("<h4>" + ex.Message);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            gvState.DataSource = ds.Tables[0];
+            gvState.DataBind();
+            gvState.Visible = true;
+        }
+        else
+        {
+            gvState.DataSource = null;
+            gvState.DataBind();
+        }
+
+        if (rdoGroupOFQues.SelectedItem.Text == "Theory Question")
+        {
+            lblMarkcorrAns.Text = "Total Max Marks : ";
+        }
+        else
+        {
+            lblMarkcorrAns.Text = "Marks For Correct Ans :";
+        }
+
+    }
+    protected void btnback_Click(object sender, EventArgs e)
+    {
+
+    }
+    protected void gvState_PageIndexChanged(object sender, EventArgs e)
+    {
+    }
+    protected void gvState_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+    }
+    protected void gvState_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+    }
+    protected void gvState_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            string[] expiredaySplit = Convert.ToString(e.Row.Cells[12].Text).Split(' '); ;
+
+            if (expiredaySplit[0] != "&nbsp;")
+            {
+                if (Convert.ToInt32(expiredaySplit[0]) < 10)
+                {
+                    e.Row.Cells[12].BackColor = System.Drawing.Color.Red;
+                    e.Row.Cells[12].ForeColor = System.Drawing.Color.White;
+                    e.Row.Cells[12].Font.Bold = true;
+                }
+            }
+        }
+    }
+
+
+    protected void gvState_Sorting(object sender, GridViewSortEventArgs e)
+    {
+       
+
+    }
+
+    #region ddlGropuofExam
+
+    protected void binddropdown212()
+    {
+ 
+    }
+
+    protected void ddlGroupofExam_SelectedIndexChanged1(object sender, EventArgs e)
+    {
+        if (ddlGroupofExam.SelectedValue == Convert.ToString(135))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=212 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(136))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=212  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(137))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=212  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(140))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=210  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(141))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=207  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(142))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=206  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(143))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=203  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+        else if (ddlGroupofExam.SelectedValue == Convert.ToString(144))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=205  ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlTypeofExam.DataSource = ds.Tables[0];
+            ddlTypeofExam.DataTextField = "Name";
+            ddlTypeofExam.DataValueField = "ItemValueIdNew";
+            ddlTypeofExam.DataBind();
+        }
+    }
+    #endregion
+
+    #region ddlTypeofExam
+    protected void ddlTypeofExam_SelectedIndexChanged1(object sender, EventArgs e)
+    {
+
+
+        if (ddlTypeofExam.SelectedValue == Convert.ToString(88))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=201 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(98))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=202 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(99))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=202";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(100))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=202 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(96))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=211 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(101))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=211 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(102))
+        {
+            ddlAddClass.Enabled = true;
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=0 or ItemIdNew=211 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            ddlAddClass.DataSource = ds.Tables[0];
+            ddlAddClass.DataTextField = "Name";
+            ddlAddClass.DataValueField = "ItemValueIdNew";
+            ddlAddClass.DataBind();
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(89))
+        {
+           // loadSubjectList();
+            Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+            ds = cc.ExecuteDataset(Sql);
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueId";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(94))
+        {
+            Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+            ds = cc.ExecuteDataset(Sql);
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueId";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(95))
+        {
+            Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+            ds = cc.ExecuteDataset(Sql);
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueId";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(130))
+        {
+            Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+            ds = cc.ExecuteDataset(Sql);
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueId";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(110))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where  ItemIdNew=204 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueIdNew";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+
+        else if (ddlTypeofExam.SelectedValue == Convert.ToString(103))
+        {
+            Sql = "select Name,ItemValueId from tblItemValue where ItemId=2";
+            ds = cc.ExecuteDataset(Sql);
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueId";
+            chkSubject.DataBind();
+            ddlAddClass.SelectedValue = "1";
+            ddlAddClass.Enabled = false;
+        }
+
+
+
+
+    }
+    #endregion
+
+    #region ddlAddClass
+    protected void ddlAddClass_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        for (int count = 0; count < 15; count++)
+        {
+            if (ddlAddClass.SelectedValue == Convert.ToString(count))
+            {
+                Sql = Sql + "select Name,ItemValueId from tblItemValue where  ItemId=2 ";
+                DataSet ds = cc.ExecuteDataset(Sql);
+
+                chkSubject.DataSource = ds.Tables[0];
+                chkSubject.DataTextField = "Name";
+                chkSubject.DataValueField = "ItemValueId";
+                chkSubject.DataBind();
+            }
+        }
+        if (ddlAddClass.SelectedValue == Convert.ToString(15))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where ItemIdNew=208 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueIdNew";
+            chkSubject.DataBind();
+        }
+
+        else if (ddlAddClass.SelectedValue == Convert.ToString(16))
+        {
+            Sql = Sql + "select Name,ItemValueIdNew from tblItemValue where   ItemIdNew=208 ";
+            DataSet ds = cc.ExecuteDataset(Sql);
+
+            chkSubject.DataSource = ds.Tables[0];
+            chkSubject.DataTextField = "Name";
+            chkSubject.DataValueField = "ItemValueIdNew";
+            chkSubject.DataBind();
+        }
+    }
+    #endregion
+}

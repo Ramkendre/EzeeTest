@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Registration">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AppMobileNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="RefmobileNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDevId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strSimSerialNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="keyword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="firstName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="firmName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="address" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SchoolCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="eMailId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Role_Id" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pincode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="passcode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="latitude" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="longitude" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="state" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="district" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Taluka" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="userType" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DealerMobNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegistrationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegistrationResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertandSendOtp">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="usrMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="refMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="imeiNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="appKeyword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertandSendOtpResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InsertandSendOtpResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertandSendOtpRoleWise">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="usrMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="refMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="imeiNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="appKeyword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserType" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertandSendOtpRoleWiseResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InsertandSendOtpRoleWiseResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckAllAppOtp">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="usrMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="refMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="imeiNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="appKeyword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="otpValue" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckAllAppOtpResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CheckAllAppOtpResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckAllAppOtpRoleWise">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="usrMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="refMobile" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="imeiNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="appKeyword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="otpValue" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CheckAllAppOtpRoleWiseResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CheckAllAppOtpRoleWiseResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="chkOTPForTrueVoter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AppMobileNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="OTP" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="keyword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="iemiNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="RefMobileNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="chkOTPForTrueVoterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="chkOTPForTrueVoterResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RegistrationSoapIn">
+    <wsdl:part name="parameters" element="tns:Registration" />
+  </wsdl:message>
+  <wsdl:message name="RegistrationSoapOut">
+    <wsdl:part name="parameters" element="tns:RegistrationResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertandSendOtpSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertandSendOtp" />
+  </wsdl:message>
+  <wsdl:message name="InsertandSendOtpSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertandSendOtpResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertandSendOtpRoleWiseSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertandSendOtpRoleWise" />
+  </wsdl:message>
+  <wsdl:message name="InsertandSendOtpRoleWiseSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertandSendOtpRoleWiseResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckAllAppOtpSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckAllAppOtp" />
+  </wsdl:message>
+  <wsdl:message name="CheckAllAppOtpSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckAllAppOtpResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckAllAppOtpRoleWiseSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckAllAppOtpRoleWise" />
+  </wsdl:message>
+  <wsdl:message name="CheckAllAppOtpRoleWiseSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckAllAppOtpRoleWiseResponse" />
+  </wsdl:message>
+  <wsdl:message name="chkOTPForTrueVoterSoapIn">
+    <wsdl:part name="parameters" element="tns:chkOTPForTrueVoter" />
+  </wsdl:message>
+  <wsdl:message name="chkOTPForTrueVoterSoapOut">
+    <wsdl:part name="parameters" element="tns:chkOTPForTrueVoterResponse" />
+  </wsdl:message>
+  <wsdl:portType name="AppRegistrationSoap">
+    <wsdl:operation name="Registration">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">METHOD FOR ALL APP REGISTRATION</wsdl:documentation>
+      <wsdl:input message="tns:RegistrationSoapIn" />
+      <wsdl:output message="tns:RegistrationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtp">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">NEW METHOD TO SEND OTP ALL APPLICATIONS</wsdl:documentation>
+      <wsdl:input message="tns:InsertandSendOtpSoapIn" />
+      <wsdl:output message="tns:InsertandSendOtpSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtpRoleWise">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">NEW METHOD TO SEND OTP ALL APPLICATIONS Role Wise</wsdl:documentation>
+      <wsdl:input message="tns:InsertandSendOtpRoleWiseSoapIn" />
+      <wsdl:output message="tns:InsertandSendOtpRoleWiseSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtp">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">METHOD TO ALL APPLICATIONS CHECK OTP</wsdl:documentation>
+      <wsdl:input message="tns:CheckAllAppOtpSoapIn" />
+      <wsdl:output message="tns:CheckAllAppOtpSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtpRoleWise">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">METHOD TO ALL APPLICATIONS CHECK OTP</wsdl:documentation>
+      <wsdl:input message="tns:CheckAllAppOtpRoleWiseSoapIn" />
+      <wsdl:output message="tns:CheckAllAppOtpRoleWiseSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="chkOTPForTrueVoter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">METHOD TO CHECK OTP FOR TRUEVOTER</wsdl:documentation>
+      <wsdl:input message="tns:chkOTPForTrueVoterSoapIn" />
+      <wsdl:output message="tns:chkOTPForTrueVoterSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AppRegistrationSoap" type="tns:AppRegistrationSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Registration">
+      <soap:operation soapAction="http://tempuri.org/Registration" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtp">
+      <soap:operation soapAction="http://tempuri.org/InsertandSendOtp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtpRoleWise">
+      <soap:operation soapAction="http://tempuri.org/InsertandSendOtpRoleWise" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtp">
+      <soap:operation soapAction="http://tempuri.org/CheckAllAppOtp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtpRoleWise">
+      <soap:operation soapAction="http://tempuri.org/CheckAllAppOtpRoleWise" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="chkOTPForTrueVoter">
+      <soap:operation soapAction="http://tempuri.org/chkOTPForTrueVoter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AppRegistrationSoap12" type="tns:AppRegistrationSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Registration">
+      <soap12:operation soapAction="http://tempuri.org/Registration" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtp">
+      <soap12:operation soapAction="http://tempuri.org/InsertandSendOtp" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertandSendOtpRoleWise">
+      <soap12:operation soapAction="http://tempuri.org/InsertandSendOtpRoleWise" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtp">
+      <soap12:operation soapAction="http://tempuri.org/CheckAllAppOtp" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAllAppOtpRoleWise">
+      <soap12:operation soapAction="http://tempuri.org/CheckAllAppOtpRoleWise" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="chkOTPForTrueVoter">
+      <soap12:operation soapAction="http://tempuri.org/chkOTPForTrueVoter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AppRegistration">
+    <wsdl:port name="AppRegistrationSoap" binding="tns:AppRegistrationSoap">
+      <soap:address location="http://myct.in/AppRegistration.asmx" />
+    </wsdl:port>
+    <wsdl:port name="AppRegistrationSoap12" binding="tns:AppRegistrationSoap12">
+      <soap12:address location="http://myct.in/AppRegistration.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

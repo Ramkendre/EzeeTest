@@ -1,0 +1,15 @@
+COMPILE
+
+C:\>cd D:\New folder (2)
+
+C:\>d:
+
+D:\New folder (2)>set path=%path%;C:\Program Files\Java\jdk1.8.0_91\bin
+
+D:\New folder (2)>
+
+
+RUN
+
+
+D:\New folder (2)>java -classpath . Asd3

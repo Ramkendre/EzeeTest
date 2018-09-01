@@ -1,0 +1,172 @@
+
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="mainform.master.cs" Inherits="mainform" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>Untitled Page</title>
+    
+</head>
+
+ 
+  
+
+<body style="background-image:url(Images/Log.jpg);">
+    <form id="form1" runat="server" name="counter">
+    <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
+    </asp:ToolkitScriptManager>
+    <marquee style="position:absolute; background-color:#ccccff; left: 6px; width: 993px; top: 4px; height: 33px;" id="MARQUEE1"><FONT size=5><B 
+style="COLOR: maroon">eZeeMHCET</B></FONT></marquee>
+        &nbsp;&nbsp;<br />
+        &nbsp;&nbsp;<br />
+        &nbsp; &nbsp;<asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="20pt" ForeColor="#FF8000"
+            Text="MH-CET"></asp:Label><br />
+        <asp:Label ID="Label2" runat="server" Font-Bold="True" Font-Size="15pt" ForeColor="#C04000"
+            Text="ONLINE EXAM"></asp:Label><br />
+       
+    
+    
+        <br />
+   
+    
+   
+        
+        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+            &nbsp;</asp:contentplaceholder>
+        &nbsp;&nbsp;<br />
+        &nbsp;
+        <asp:Menu ID="MenuList" runat="server" BackColor="#FFFBD6" DynamicHorizontalOffset="2"
+            Font-Names="Verdana" Font-Size="11pt" Font-Strikeout="False" Font-Underline="False"
+            ForeColor="#990000" Height="296px" ItemWrap="True" 
+        OnMenuItemClick="Menu1_MenuItemClick" StaticSubMenuIndent="10px" Style="left: 19px; list-style-type: square;
+            position: absolute; top: 170px" Width="141px" Font-Bold="False" 
+        Font-Overline="False">
+            <StaticSelectedStyle BackColor="#FFCC66" />
+            <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+            <DynamicHoverStyle BackColor="#990000" ForeColor="White" />
+            <DynamicMenuStyle BackColor="#FFFBD6" />
+            <DynamicSelectedStyle BackColor="#FFCC66" />
+            <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+            <StaticHoverStyle BackColor="#990000" ForeColor="White" />
+            <Items>
+                <asp:MenuItem Text="Add Exam Name" 
+                    Value="ExamName" ToolTip="Click here to add Exam Name"></asp:MenuItem>
+                <asp:MenuItem Text="Add Subject" ToolTip="Click here to add subject" Value="Add Subject">
+                </asp:MenuItem>
+                <asp:MenuItem Text="Add Topic" ToolTip="Click here to add newtTopic" Value="Add Topic">
+                </asp:MenuItem>
+                <asp:MenuItem Text="Add Question" ToolTip="Click here to add  questions" Value="Add Question">
+                </asp:MenuItem>
+                <asp:MenuItem Text="Practice" ToolTip="Click here to practice" Value="Practice"></asp:MenuItem>
+                <asp:MenuItem Text="Exam" ToolTip="Click Here for exam" Value="Exam"></asp:MenuItem>
+                <asp:MenuItem Text="Test Definition" Value="Test Definition" 
+                    ToolTip="Click here to add Test Defination"></asp:MenuItem>
+                <asp:MenuItem Text="Exit" ToolTip="Click here to exit" Value="Exit"></asp:MenuItem>
+            </Items>
+        </asp:Menu>
+        &nbsp;<br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <br />
+
+    <p>
+       
+    
+    
+        <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/ezeelogo.JPG" />
+        </p>
+    </form>
+    
+    
+    
+</body>
+</html>
+
+<%--<body style="background-image:url(Images/Log.jpg);">
+    <form id="form1" runat="server" name="counter">
+    <div>
+    <table >
+        <tr>
+            <td>
+               <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></asp:ToolkitScriptManager>
+                   <marquee  id="MARQUEE1"><FONT size=5></FONT><B style="COLOR: maroon">eZeeMHCET</B></marquee><br />
+            </td>
+                  
+                  <td>
+                  
+                  </td>
+                   <td rowspan="3">
+                        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+                                <table style="height: 10px"></table>
+                       </asp:contentplaceholder>
+                   </td>
+            
+            
+        </tr>
+        <tr>
+            <td>
+                   <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="20pt" ForeColor="#FF8000" Text="MH-CET"></asp:Label>
+                   <br />
+                   <asp:Label ID="Label2" runat="server" Font-Size="15pt" ForeColor="#C04000" Text="ONLINE EXAM"></asp:Label><br /><br /><br />
+            </td>
+        </tr>
+        <tr>
+              <td>
+                  <asp:Menu ID="MenuList" runat="server" BackColor="#FFFBD6" DynamicHorizontalOffset="2"
+                       Font-Names="Verdana" Font-Size="11pt" Font-Strikeout="False" Font-Underline="False"
+                       ForeColor="#990000" Height="296px" ItemWrap="True" 
+                       OnMenuItemClick="Menu1_MenuItemClick" StaticSubMenuIndent="10px" 
+                       Font-Bold="False" Font-Overline="False" style="font-family: Aharoni">
+                            <StaticSelectedStyle BackColor="#FFCC66" />
+                            <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                            <DynamicHoverStyle BackColor="#990000" ForeColor="White" />
+                            <DynamicMenuStyle BackColor="#FFFBD6" />
+                            <DynamicSelectedStyle BackColor="#FFCC66" />
+                            <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                            <StaticHoverStyle BackColor="#990000" ForeColor="White" />
+                                <Items>
+                                     <asp:MenuItem Text="Add Exam Name" Value="ExamName" ToolTip="Click here to Add Exam Name"></asp:MenuItem>
+                                     <asp:MenuItem Text="Add Subject" ToolTip="Click here to Add Subject" Value="Add Subject"></asp:MenuItem>
+                                     <asp:MenuItem Text="Add Topic"   ToolTip="Click here to Add Topic Name" Value="Add Topic"></asp:MenuItem>
+                                     <asp:MenuItem Text="Add Question" ToolTip="Click here to Add Question" Value="Add Question"></asp:MenuItem>
+                                     <asp:MenuItem Text="Practice"  ToolTip="Click here to Practice" Value="Practice"></asp:MenuItem>
+                                     <asp:MenuItem Text="Exam"  ToolTip="Click here to Exam"  Value="Exam"></asp:MenuItem>
+                                     <asp:MenuItem Text="Test Definition"  ToolTip="Click here to Test Defination " Value="Test Definition"></asp:MenuItem>
+                                     <asp:MenuItem Text="Exit"  Value="Exit" NavigateUrl="~/index.aspx"></asp:MenuItem>
+                                 </Items>
+                    </asp:Menu>
+                    <br />
+                    </td>
+        </tr>
+      
+         <tr>
+         <td>
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/ezeelogo.JPG" />
+        </td>
+        </tr>
+         
+
+        
+      
+</table>
+
+
+</div>
+
+    </form>
+</body>--%>

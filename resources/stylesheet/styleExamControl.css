@@ -1,0 +1,164 @@
+﻿body
+{
+}
+
+.middlediv
+{
+	height: 500px;
+}
+
+.tdInstruction
+{
+	font: normal 14px Times New Roman;
+}
+
+.tdHeader
+{
+	width: 88px;
+	background-color: #FFFBD6;
+	vertical-align: top;
+}
+
+.timerBlock_tdHeader
+{
+	width: 88px;
+	vertical-align: middle;
+	background-color: #FFFBD6;
+}
+
+
+.tdMiddle
+{
+	vertical-align: middle;
+}
+td
+{
+	vertical-align: text-top;
+}
+
+.timerControlClass
+{
+	border-width: 0px;
+	width: 100px;
+	margin-right: 30px;
+	letter-spacing: 2px;
+	font: bold 22px Arial, Helvetica, sans-serif;
+	color: Black;
+}
+
+#wrapper #mp_header .num_time
+{
+	width: 115px;
+}
+
+.displayBlock
+{
+	display: none;
+	width: 200px;
+}
+
+.displayDiv
+{
+	height: 0px;
+	display: none;
+}
+
+.RoundedBtn
+{
+	border-radius: 50%;
+	border: groove 1px gray;
+	width: 70px;
+	height: 60px;
+	background-color: White;
+	color: Gray;
+	font-size: 25px;
+}
+
+.txtReportText
+{
+	width: 40px;
+	border-width: thin;
+	font-size: large;
+	font-weight: bold;
+}
+
+.subColorStip
+{
+	height: 17px;
+	background: #dddddd;
+}
+.report_top_row02 .table02 .table_section tr.table_heading td
+{
+	font: bold 12px Arial, Helvetica, sans-serif;
+}
+
+.report_top_row02 .table02 .table_section tr.table_data td
+{
+	font: bold 22px Arial, Helvetica, sans-serif;
+	color: #979797;
+}
+
+
+
+/*dashboard user Name profile Box start*/
+.loginName
+{
+	font: italic 14px/20px georgia;
+	color: #287bae;
+	margin-right: 10px; *float:right;*overflow:hidden;padding-right:5px}/* asterik css refers for ie6 and ie7*/
+
+.report_top_row02 .table02 ul, .report_top_row02 .table02 .table_section
+{
+	float: left;
+	width: 100%;
+	background: #fff url(Images/tableBackImg.jpg) repeat-x 0 0;
+}
+
+.report_top_row02 .table02 ul li, .report_top_row02 .table02 .table_section tr td
+{
+	font-family: Arial, Helvetica, sans-serif;
+	padding-right: 2px;
+	background: url(Images/tableBackImg.jpg) repeat-y right 0;
+	position: relative;
+	height: 45px;
+}
+.report_top_row02 .table02 ul li
+{
+	float: left;
+	width: 116px;
+}
+.report_top_row02 .table02 ul li span
+{
+	display: block;
+	font-size: 12px;
+	line-height: 14px;
+	color: #626262;
+	text-align: center;
+	font-weight: bold;
+	padding: 17px 0;
+}
+.report_top_row02 .table02 .table_section tr.table_heading td
+{
+	font: bold 12px Arial, Helvetica, sans-serif; ;}
+.report_top_row02 .table02 .table_section tr.table_data td
+{
+	font: bold 22px Arial, Helvetica, sans-serif;
+	color: #979797;
+}
+
+.report_top_row02 .table02 ul li.two_word span
+{
+	padding: 10px 0;
+}
+.report_top_row02 .table02 ul li.no_bg
+{
+	background: none;
+}
+.report_top_row02 .table02 ul li strong
+{
+	display: block;
+	font-size: 22px;
+	line-height: 45px;
+	text-align: center;
+	color: #979797;
+}
